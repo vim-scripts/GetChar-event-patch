@@ -1,0 +1,31 @@
+*** vim.h	Sat May 13 03:57:57 2006
+--- vim.h.new	Sat May 13 03:57:57 2006
+***************
+*** 1151,1156 ****
+--- 1151,1157 ----
+      EVENT_TABENTER,		/* after entering a tab page */
+      EVENT_SHELLCMDPOST,		/* after ":!cmd" */
+      EVENT_SHELLFILTERPOST,	/* after ":1,2!cmd", ":w !cmd", ":r !cmd". */
++     EVENT_GETCHAR,		/* user key press detected */
+      NUM_EVENTS			/* MUST be the last one */
+  };
+  
+***************
+*** 1666,1672 ****
+  #define VV_SWAPCHOICE	46
+  #define VV_SWAPCOMMAND	47
+  #define VV_CHAR		48
+! #define VV_LEN		49	/* number of v: vars */
+  
+  #ifdef FEAT_CLIPBOARD
+  
+--- 1667,1675 ----
+  #define VV_SWAPCHOICE	46
+  #define VV_SWAPCOMMAND	47
+  #define VV_CHAR		48
+! #define VV_GETCHAR 	49
+! #define VV_GETCHARTYPE 	50
+! #define VV_LEN		51	/* number of v: vars */
+  
+  #ifdef FEAT_CLIPBOARD
+  

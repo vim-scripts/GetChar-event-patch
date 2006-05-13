@@ -1,0 +1,20 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1541
+
+When compiled with this patch, Vim will have a new event, "GetChar".
+
+The doc page patch:
+
+
+                            *GetChar*
+GetChar             Called immediately after a character is
+                received from the user or typeahead buffer,
+                and before it is processed.  The character is
+                available in the |v:getchar| variable as a
+                string (not a number).  Changing |v:getchar|
+                changes the value returned by the
+                |getchar()|function.  The |v:getchartype|
+                variable can be blank, 'KeyTyped', or
+                'KeyStuffed', depending on how the character
+                was obtained.  Setting |v:getchar| to ''
+                essentially skips the current character.
+

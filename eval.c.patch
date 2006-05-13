@@ -1,0 +1,114 @@
+*** eval.c	Sat May 13 03:57:56 2006
+--- eval.c.new	Sat May 13 03:57:56 2006
+***************
+*** 345,350 ****
+--- 345,352 ----
+      {VV_NAME("swapchoice",	 VAR_STRING), 0},
+      {VV_NAME("swapcommand",	 VAR_STRING), VV_RO},
+      {VV_NAME("char",		 VAR_STRING), VV_RO},
++     {VV_NAME("getchar",	         VAR_NUMBER), 0},
++     {VV_NAME("getchartype",      VAR_NUMBER), 0},
+  };
+  
+  /* shorthand */
+***************
+*** 21091,21093 ****
+--- 21093,21190 ----
+  }
+  
+  #endif /* defined(FEAT_MODIFY_FNAME) || defined(FEAT_EVAL) */
++ 
++ 
++ 
++ 
++ 
++ int set_getchar_event_vvars( c ) 
++     int c;
++ {
++     typval_T	save_getchar;
++     int		modifiers;
++     char_u	*key_name;
++     char_u	dst[7];
++     int		dst_len;
++ 
++     extract_modifiers( c, &modifiers );
++ 
++     key_name = get_special_key_name(c, modifiers);
++ 
++     dst_len = trans_special( &key_name, dst, c );
++ 
++     // Bombs set_vim_var_string() : 
++     //vim_free( vimvars[VV_GETCHAR].vv_str );
++ 	
++     prepare_vimvar(VV_GETCHAR, &save_getchar);
++     vimvars[VV_GETCHAR].vv_type = VAR_STRING;
++ 
++ 
++     if ( IS_SPECIAL( c ) )
++ 	set_vim_var_string( VV_GETCHAR, dst, dst_len);
++     else
++ 	set_vim_var_string( VV_GETCHAR, (char_u *)&c, 1);
++ 
++     prepare_vimvar(VV_GETCHARTYPE, &save_getchar);
++     vimvars[VV_GETCHARTYPE].vv_type = VAR_STRING;
++ 
++     /* NOTE: KeyTyped is unreliable when feedkeys() is called with
++      * different flags in succession.
++      */
++     char *t;
++     vimvars[VV_GETCHARTYPE].vv_str = (char_u *)"";
++     if ( KeyTyped )
++ 	vimvars[VV_GETCHARTYPE].vv_str = (char_u *)"KeyTyped";
++     else if ( KeyStuffed )
++ 	vimvars[VV_GETCHARTYPE].vv_str = (char_u *)"KeyStuffed";
++ 
++ }
++ 
++ 
++ 
++ int
++ get_getchar_event_vvar_getchar( ) 
++ {
++     int c;
++     char_u *str, *str2;
++ 
++     str = vimvars[VV_GETCHAR].vv_str;
++ 
++     if ( STRLEN( str ) > 1 )
++     {
++ 	if ( str[0] == K_SPECIAL )
++ 	    c = TERMCAP2KEY( str[1], str[2] );
++     }
++     else
++ 	c = (int)str[0];
++ 
++ 
++     // Can't write to memory at vv_str, why?
++     /*
++     for( str = vimvars[VV_GETCHARTYPE].vv_str; *str != NUL ; str++ )
++ 	*str = tolower( *str );
++     */
++ 
++ 
++     str = malloc( STRLEN( vimvars[VV_GETCHARTYPE].vv_str ) + 1 );
++     STRCPY( str, vimvars[VV_GETCHARTYPE].vv_str );
++     
++     for(str2 = str ; *str2 != '\0' ; str2++ )
++ 	*str2 = tolower( *str2 );
++ 
++     // crash:
++     //vim_free( vimvars[VV_GETCHARTYPE].vv_str );
++     //vimvars[VV_GETCHARTYPE].vv_str =
++ 	//vim_strsave( str );
++ 
++     if ( !STRCMP( str, "keytyped" ) )
++ 	KeyTyped = TRUE;
++ 
++     if ( !STRCMP( str, "keystuffed" ) )
++ 	KeyStuffed = TRUE;
++ 
++     free( str );
++ 
++     return c;
++ }
++ 

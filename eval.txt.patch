@@ -1,0 +1,21 @@
+*** eval.txt	Sat May 13 03:57:56 2006
+--- eval.txt.new	Sat May 13 03:57:56 2006
+***************
+*** 1338,1343 ****
+--- 1338,1353 ----
+  v:foldstart	Used for 'foldtext': first line of closed fold.
+  		Read-only in the |sandbox|. |fold-foldtext|
+  
++ 					*v:getchar*
++ v:getchar	Contains the character currently intercepted by the |GetChar|
++ 		autocommand event.  This is always a string type, unlike the
++ 		return from |getchar()| which can be either a number or a
++ 		string, therefore |nr2char()| is not valid for it.
++ 
++ 					*v:getchartype*
++ v:getchartype	Contains special flags for |v:getchar|.  Values can be '',
++ 		'KeyTyped', or 'KeyStuffed'. 
++ 
+  					*v:insertmode* *insertmode-variable*
+  v:insertmode	Used for the |InsertEnter| and |InsertChange| autocommand
+  		events.  Values:

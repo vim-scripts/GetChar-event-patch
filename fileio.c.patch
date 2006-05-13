@@ -1,0 +1,38 @@
+*** fileio.c	Sat May 13 03:57:57 2006
+--- fileio.c.new	Sat May 13 03:57:57 2006
+***************
+*** 6995,7000 ****
+--- 6995,7001 ----
+      {"InsertChange",	EVENT_INSERTCHANGE},
+      {"InsertEnter",	EVENT_INSERTENTER},
+      {"InsertLeave",	EVENT_INSERTLEAVE},
++     {"GetChar",	        EVENT_GETCHAR},
+      {"MenuPopup",	EVENT_MENUPOPUP},
+      {"QuickFixCmdPost",	EVENT_QUICKFIXCMDPOST},
+      {"QuickFixCmdPre",	EVENT_QUICKFIXCMDPRE},
+***************
+*** 8305,8310 ****
+--- 8306,8320 ----
+  }
+  
+  /*
++  * Return TRUE when there is a GetChar autocommand defined.
++  */
++     int
++ has_getchar_event()
++ {
++     return (first_autopat[(int)EVENT_GETCHAR] != NULL);
++ }
++ 
++ /*
+   * Return TRUE when there is a CursorMoved autocommand defined.
+   */
+      int
+***************
+*** 9454,9456 ****
+--- 9464,9468 ----
+      }
+      return reg_pat;
+  }
++ 
++ 
